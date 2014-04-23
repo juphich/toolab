@@ -1,0 +1,26 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>net.toolab</groupId>
+		<artifactId>roundtable</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>roundtable-core</artifactId>
+	<name>roundtable-core</name>
+	
+	<dependencies>
+		<!-- custom libraries -->
+        <dependency>
+            <groupId>net.toolab</groupId>
+            <artifactId>toolab-utils</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        
+        <!-- apache commons -->
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.6</version>
+        </dependency>
+	</dependencies>
+</project>
