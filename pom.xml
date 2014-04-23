@@ -19,6 +19,18 @@
         <lang.encoding>UTF-8</lang.encoding>
     </properties>
     
+	<distributionManagement>
+	    <repository>
+	        <id>repo</id>
+	        <url>https://github.com/juphich/juphich-maven-repository/releases</url>
+	    </repository>
+	    
+	    <snapshotRepository>
+	        <id>snapshot-repo</id>
+	        <url>https://github.com/juphich/juphich-maven-repository/snapshots</url>
+	    </snapshotRepository>
+	</distributionManagement>
+
     <build>
         <plugins>
             <plugin>
