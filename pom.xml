@@ -5,12 +5,12 @@
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>toolab</name>
-    
+        
     <modules>
         <module>toolab-utils</module>
         <module>toolab-http</module>
-        <module>roundtable</module>
     	<module>toolab-persist</module>
+        <module>roundtable</module>
 	</modules>
     
     <properties>
