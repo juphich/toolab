@@ -1,20 +1,20 @@
 package net.toolab.query.impl;
 
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Map;
 import java.util.PriorityQueue;
 
-import net.toolab.query.Query;
 import net.toolab.query.QueryUnit;
 
-public class SqlQuery implements Query {
+public class SqlQuery extends AbstractQuery {
 
 	private PriorityQueue<QueryUnit> units = new PriorityQueue<>();
 	
-	public void addUnit(QueryUnit unit) {
-		if (!units.contains(unit)) {
-			units.add(unit);
-		}
+	public SqlQuery(Collection<QueryUnit> queries) {
+		super(queries);
 	}
-
+	
 	@Override
 	public String queryString() {
 		StringBuilder query = new StringBuilder();
@@ -28,5 +28,10 @@ public class SqlQuery implements Query {
 		}
 		
 		return query.toString().trim();
+	}
+
+	@Override
+	public Map<Serializable, Object> entry() {
+		return null;
 	}
 }

@@ -3,6 +3,9 @@ package net.toolab.query;
 import static org.junit.Assert.*;
 import static org.hamcrest.core.Is.is;
 
+import java.io.Serializable;
+import java.util.Map;
+
 import net.toolab.query.builder.QueryBuilder;
 
 import org.junit.Test;
@@ -35,8 +38,13 @@ public class QueryTest {
 			.and("flag").not("test")
 			.build();
 		
+		Map<Serializable, Object> keyMap = query.entry();
+		
 		assertNotNull(query);
 		assertThat(query.queryString(), is("where userNum = 4 and flag <> test and posts > 100"));
+		assertThat((Integer)keyMap.get("userNum"), is(4));
+		assertThat((String)keyMap.get("flag"), is("test"));
+		assertThat((Integer)keyMap.get("posts"), is(100));
 	}
 	
 	@Test

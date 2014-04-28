@@ -1,12 +1,17 @@
 package net.toolab.query.impl;
 
-import net.toolab.query.Query;
+import java.util.Collection;
 
-public class HttpRequestQuery implements Query {
+import net.toolab.query.QueryUnit;
+
+public class HttpRequestQuery extends AbstractQuery {
+
+	public HttpRequestQuery(Collection<QueryUnit> queries) {
+		super(queries, true);
+	}
 
 	@Override
 	public String queryString() {
 		return null;
 	}
-
 }

@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.toolab.query.Predicate;
 import net.toolab.query.Query;
+import net.toolab.query.QueryUnit;
 import net.toolab.query.impl.SqlQuery;
 
 public class QueryBuilder {
@@ -30,12 +31,11 @@ public class QueryBuilder {
 	}
 	
 	public Query build() {
-		SqlQuery query = new SqlQuery();
-		
+		List<QueryUnit> units = new ArrayList<>();
 		for (QueryUnitBuilder ub : queries) {
-			query.addUnit(ub.build());
+			units.add(ub.build());
 		}
 		
-		return query;
+		return new SqlQuery(units);
 	}
 }
