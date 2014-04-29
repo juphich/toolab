@@ -1,12 +1,10 @@
 package net.toolab.query;
 
-import static org.junit.Assert.*;
 import static org.hamcrest.core.Is.is;
-
-import java.io.Serializable;
-import java.util.Map;
-
-import net.toolab.query.builder.QueryBuilder;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import net.toolab.query.builder.QueryUnitBuilder;
+import net.toolab.query.sql.SqlQueryBuilder;
 
 import org.junit.Test;
 
@@ -32,23 +30,48 @@ public class QueryTest {
 
 	@Test
 	public void testBuildQuery() {
-		Query query = new QueryBuilder()
+		Query query = new SqlQueryBuilder()
 			.where("userNum").is(4)
 			.and("posts").gt(100)
 			.and("flag").not("test")
 			.build();
 		
-		Map<Serializable, Object> keyMap = query.entry();
-		
 		assertNotNull(query);
 		assertThat(query.queryString(), is("where userNum = 4 and flag <> test and posts > 100"));
-		assertThat((Integer)keyMap.get("userNum"), is(4));
-		assertThat((String)keyMap.get("flag"), is("test"));
-		assertThat((Integer)keyMap.get("posts"), is(100));
+	}
+	
+	@Test
+	public void testQueryKeyMapTest() {
+		Query query = new SqlQueryBuilder()
+			.where("userNum").is(4)
+			.and("name").is("elsa")
+			.and("posts").gt(100)
+			.and("allow").is(true)
+			.and("flag").not("test")
+			.build();
+		
+		Param param = query.entry(Param.class);
+		
+		assertThat(param.userNum, is(4));
+		assertThat(param.name, is("elsa"));
+		assertThat(param.allow, is(true));
 	}
 	
 	@Test
 	public void testBuildOrQuery() {
+		Query query = new SqlQueryBuilder()
+			.where("1").is(1)
+			.and(
+				new QueryUnitBuilder(Predicate.and, "", new SqlQueryBuilder()).is(3)
+				//with("").is(2).and("vjli").ge(37)
+			 )
+			.build();
 		throw new RuntimeException();
 	}
+}
+
+class Param {
+	String name;
+	int userNum;
+	boolean allow;
 }

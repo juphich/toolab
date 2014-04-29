@@ -2,14 +2,14 @@ package net.toolab.query.builder;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import net.toolab.query.Predicate;
 import net.toolab.query.Query;
 import net.toolab.query.QueryUnit;
-import net.toolab.query.impl.SqlQuery;
 
-public class QueryBuilder {
+public abstract class QueryBuilder<Q extends Query> {
 
 	private List<QueryUnitBuilder> queries = new ArrayList<>();
 	
@@ -25,8 +25,16 @@ public class QueryBuilder {
 		queries.add(query);
 		return query;
 	}
+	
+	public QueryBuilder<Q> and(QueryBuilder<?> builder) {
+		if (builder != this) {
+			throw new RuntimeException("not equal");
+		}
 		
-	public QueryBuilder or() {
+		return this;
+	}
+		
+	public QueryBuilder<Q> or() {
 		return this;
 	}
 	
@@ -36,6 +44,8 @@ public class QueryBuilder {
 			units.add(ub.build());
 		}
 		
-		return new SqlQuery(units);
+		return newInstance(units);
 	}
+	
+	protected abstract Q newInstance(Collection<QueryUnit> units);
 }
