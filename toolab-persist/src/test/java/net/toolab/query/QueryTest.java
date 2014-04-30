@@ -1,77 +1,76 @@
 package net.toolab.query;
 
+import static org.junit.Assert.*;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import net.toolab.query.builder.QueryUnitBuilder;
-import net.toolab.query.sql.SqlQueryBuilder;
+
+import java.io.Serializable;
+import java.util.Map;
+
+import net.toolab.query.sql.SqlQueryGenerator;
 
 import org.junit.Test;
 
-/**
- * @author jupic
- *
- * query 의 종류는 여러가지가 존재한다.
- * 
- * sql query
- * http get request 요청 query
- * mongodb 등 nosql query
- * 
- * 각 query 들은 query string으로 변환가능 하며,
- * 
- * 해당 query에 대한 key map을 가지고 있다.
- * 
- * key map은 pojo로 작성이 가능하고 
- * 
- * default key map을 등록 가능하다.
- * 
- */
 public class QueryTest {
 
 	@Test
-	public void testBuildQuery() {
-		Query query = new SqlQueryBuilder()
-			.where("userNum").is(4)
-			.and("posts").gt(100)
-			.and("flag").not("test")
-			.build();
+	public void testSimpleQuery() {
+		QuerySet query = new QuerySet(false);
+		query.setQueryGenerator(new SqlQueryGenerator());
 		
-		assertNotNull(query);
-		assertThat(query.queryString(), is("where userNum = 4 and flag <> test and posts > 100"));
+		query.addQuery(Predicate.where, new QueryUnit("name", Operand.is, "elsa"));
+		query.addQuery(Predicate.and, new QueryUnit("gender", Operand.is, "female"));
+		query.addQuery(Predicate.or, new QueryUnit("age", Operand.le, 30));
+		
+		
+		assertNotNull(query.query());
+		assertThat(query.query(), is("where name = elsa and gender = female or age <= 30"));
 	}
 	
 	@Test
-	public void testQueryKeyMapTest() {
-		Query query = new SqlQueryBuilder()
-			.where("userNum").is(4)
-			.and("name").is("elsa")
-			.and("posts").gt(100)
-			.and("allow").is(true)
-			.and("flag").not("test")
-			.build();
+	public void testQuerySet() {
+		QuerySet query = new QuerySet(false);
+		query.setQueryGenerator(new SqlQueryGenerator());
 		
-		Param param = query.entry(Param.class);
+		query.addQuery(Predicate.where, new QueryUnit("name", Operand.is, "elsa"));
 		
-		assertThat(param.userNum, is(4));
-		assertThat(param.name, is("elsa"));
-		assertThat(param.allow, is(true));
+		QuerySet subset = new QuerySet(false);
+		subset.addQuery(Predicate.empty, new QueryUnit("gender", Operand.is, "female"));
+		subset.addQuery(Predicate.or, new QueryUnit("age", Operand.ge, 10));
+		
+		query.addQuery(Predicate.and, subset);
+		
+		
+		assertThat(query.query(), is("where name = elsa and (empty gender = female or age >= 10)"));
 	}
 	
 	@Test
-	public void testBuildOrQuery() {
-		Query query = new SqlQueryBuilder()
-			.where("1").is(1)
-			.and(
-				new QueryUnitBuilder(Predicate.and, "", new SqlQueryBuilder()).is(3)
-				//with("").is(2).and("vjli").ge(37)
-			 )
-			.build();
-		throw new RuntimeException();
+	public void testQueryParameter() {
+		QuerySet query = new QuerySet(false);
+		query.setQueryGenerator(new SqlQueryGenerator());
+		
+		query.addQuery(Predicate.where, new QueryUnit("name", Operand.is, "elsa"));
+		
+		QuerySet subset = new QuerySet(false);
+		subset.addQuery(Predicate.empty, new QueryUnit("gender", Operand.is, "female"));
+		subset.addQuery(Predicate.or, new QueryUnit("age", Operand.ge, 10));
+		
+		query.addQuery(Predicate.and, subset);
+		
+		Map<Serializable, Object> pMap = query.parameters();
+		
+		assertThat("elsa", is((String)pMap.get("name")));
+		assertThat("female", is((String)pMap.get("gender")));
+		assertThat(10, is((int)pMap.get("age")));
+		
+		ParamObj pObj = query.parameters(ParamObj.class);
+		assertThat("elsa", is(pObj.name));
+		assertThat("female", is(pObj.gender));
+		assertThat(10, is(pObj.age));
 	}
 }
 
-class Param {
+class ParamObj {
 	String name;
-	int userNum;
-	boolean allow;
+	String gender;
+	int age;
 }

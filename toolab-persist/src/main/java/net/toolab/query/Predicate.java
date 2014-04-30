@@ -1,5 +1,5 @@
 package net.toolab.query;
 
 public enum Predicate {
-	where, and, or;
+	empty, where, and, or;
 }

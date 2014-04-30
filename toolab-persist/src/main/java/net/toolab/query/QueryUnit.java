@@ -1,26 +1,21 @@
 package net.toolab.query;
 
 import java.io.Serializable;
+import java.util.Map;
 
-public class QueryUnit implements Comparable<QueryUnit> {
+public class QueryUnit implements Query {
 
 	private Serializable key;
 	private Object value;
 	
-	private Predicate predicate;
 	private Operand op;
 	
-	public QueryUnit(Predicate predicate, Serializable key, Operand op, Object value) {
-		this.predicate = predicate;
+	QueryUnit(Serializable key, Operand op, Object value) {
 		this.key = key;
 		this.op = op;
 		this.value = value;
 	}
 	
-	public Predicate predicate() {
-		return predicate;
-	}
-
 	public Serializable key() {
 		return key;
 	}
@@ -34,13 +29,20 @@ public class QueryUnit implements Comparable<QueryUnit> {
 	}
 
 	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((key == null) ? 0 : key.hashCode());
-		return result;
+	public String query() {
+		throw new UnsupportedOperationException("QueryUnit class does not support this method");
 	}
 
+	@Override
+	public Map<Serializable, Object> parameters() {
+		throw new UnsupportedOperationException("QueryUnit class does not support this method");
+	}
+
+	@Override
+	public <P> P parameters(Class<P> type) {
+		throw new UnsupportedOperationException("QueryUnit class does not support this method");
+	}
+	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -57,9 +59,12 @@ public class QueryUnit implements Comparable<QueryUnit> {
 			return false;
 		return true;
 	}
-
+	
 	@Override
-	public int compareTo(QueryUnit o) {
-		return this.predicate.ordinal() - o.predicate.ordinal();
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((key == null) ? 0 : key.hashCode());
+		return result;
 	}
 }

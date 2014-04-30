@@ -5,9 +5,9 @@ import java.util.Map;
 
 public interface Query {
 
-	String queryString();
+	String query();
 
-	Map<Serializable, Object> entry();
+	Map<Serializable, Object> parameters();
 
-	<P> P entry(Class<P> type);
+	<P> P parameters(Class<P> type);
 }
