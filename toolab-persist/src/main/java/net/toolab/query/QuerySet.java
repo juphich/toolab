@@ -58,8 +58,7 @@ public class QuerySet implements Query {
 		Collections.sort(queries);
 		
 		for (QueryEntry entry : queries) {
-			query.append(queryGenerator.makeQuery(entry.predicate, entry.query))
-				 .append(" ");
+			query.append(queryGenerator.makeQuery(entry.predicate, entry.query)).append(" ");
 		}
 		
 		return query.toString().trim();
